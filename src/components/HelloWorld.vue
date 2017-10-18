@@ -18,7 +18,7 @@ export default {
     }
   },
   created () {
-    axios.get(`http://localhost:4000/rooms`)
+    axios.get(`http://localhost:3000/rooms`)
     .then(response => {
       // JSON responses are automatically parsed.
       console.log(response.data)

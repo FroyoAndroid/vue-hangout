@@ -1,7 +1,7 @@
 <template>
 
 <div>
-    <h2>{{msg}} {{id}}</h2>
+    <h2>{{msg}}}</h2>
     <div class="content">
       <video id="publisher-video"></video>
     </div>
@@ -16,25 +16,27 @@
 
 
 <script>
+import config from '../config/tokbox.config'
+
 export default {
   name: 'Room',
   props: ['id'],
   data () {
     return {
-      msg: `Welcome to room`
+      msg: `Welcome Aboard`
     }
   },
   methods: {
-    joinRoom : () => {
-      console.log('Join Room');
+    joinRoom: () => {
+      console.log('Join Room', config.apiKey, this.id)
     },
 
     mute: () => {
-      console.log('Mute Called');
+      console.log('Mute Called')
     },
 
     dropCall: () => {
-      console.log('Drop call');
+      console.log('Drop call')
     }
   }
 }
