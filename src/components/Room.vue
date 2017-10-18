@@ -1,14 +1,14 @@
 <template>
 
-<div> 
+<div>
     <h2>{{msg}} {{id}}</h2>
     <div class="content">
       <video id="publisher-video"></video>
     </div>
     <div class="control">
-      <button>Join Room</button>
-      <button> Mute / Unmute</button>
-      <button>End Call</button>
+      <button @click="joinRoom()">Join Room</button>
+      <button @click="mute()"> Mute / Unmute</button>
+      <button @click="dropCall()">End Call</button>
     </div>
 </div>
 
@@ -22,6 +22,19 @@ export default {
   data () {
     return {
       msg: `Welcome to room`
+    }
+  },
+  methods: {
+    joinRoom : () => {
+      console.log('Join Room');
+    },
+
+    mute: () => {
+      console.log('Mute Called');
+    },
+
+    dropCall: () => {
+      console.log('Drop call');
     }
   }
 }

@@ -2,7 +2,7 @@
   <div class="hello">
     <h1>{{ msg }}</h1>
     <ul>
-      <li v-for="room in rooms"><a href="https://vuejs.org" target="_blank">{{room}}</a></li>
+      <li v-for="room in rooms"><a v-bind:href="'#/'+room.sessionID" target="_blank">{{room.room}}</a></li>
     </ul>
   </div>
 </template>
@@ -18,10 +18,10 @@ export default {
     }
   },
   created () {
-    axios.get(`http://stream.eu-4.evennode.com/rooms`)
+    axios.get(`http://localhost:4000/rooms`)
     .then(response => {
       // JSON responses are automatically parsed.
-      console.log(response.status)
+      console.log(response.data)
       this.rooms = response.data
     })
     .catch(e => {
