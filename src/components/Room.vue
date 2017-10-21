@@ -2,7 +2,7 @@
   <div>
     <h2>{{msg}}</h2>
     <div class="content">
-      <video id="publisher-video"></video>
+      <div id="publisherContainer"></div>
     </div>
     <div class="control">
       <button @click="joinRoom(sessionID)">Join Room</button>
@@ -18,7 +18,9 @@ import config from '../config/tokbox.config'
 import axios from 'axios'
 
 let session = null
-// let publisher = null
+let OT = window.OT
+let publisher = null
+
 export default {
   name: 'Room',
   props: ['id'],
@@ -30,17 +32,23 @@ export default {
   },
   methods: {
     joinRoom (sessionId) {
-      session = window.OT.initSession(config.apiKey, sessionId)
-      setTimeout(() => {
-        this.bindSessionEvents(session)
-      }, 300)
+      if (OT.checkSystemRequirements() === 1) {
+        session = OT.initSession(config.apiKey, sessionId)
+      } else {
+        console.error('Browser does not support webrtc')
+      }
+
       axios.post('http://localhost:3000/rooms/token', {
         sessionID: sessionId,
+        tokenType: 'publisher',
         username: 'test'
       }).then((response) => {
         session.connect(response.data.token, (error) => {
           if (error) {
             console.error('Error', error)
+          } else {
+            this.bindSessionEvents(session)
+            this.publishVideo()
           }
         })
       }).catch((error) => {
@@ -50,7 +58,7 @@ export default {
 
     bindSessionEvents (session) {
       console.log('session', session.connection.connectionId)
-      session.off().on('connectionCreated', (event) => {
+      session.on('connectionCreated', (event) => {
         if (event.connection.connectionId !== session.connection.connectionId) {
           console.log('Attending joining', event.connection.connectionId)
         } else {
@@ -58,12 +66,50 @@ export default {
         }
       })
 
-      session.off().on('sessionDisconnected', (event) => {
+      session.on('sessionDisconnected', (event) => {
         console.log('session disconnecting')
       })
 
-      session.off().on('streamDestroyed', (event) => {
+      session.on('streamDestroyed', (event) => {
         console.log('stream disconnected')
+      })
+    },
+
+    publishVideo () {
+      let targetElement = 'publisherContainer'
+      let publisherProperties = {
+        insertMode: 'append'
+      }
+
+      publisher = OT.initPublisher(targetElement, publisherProperties, (error) => {
+        if (error) {
+          // the client can not publish
+        } else {
+          console.log('publisher initialised')
+          this.bindPublisherEvent()
+          this.publishVideoToSession()
+        }
+      })
+    },
+
+    publishVideoToSession () {
+      session.publish(publisher, (error) => {
+        if (error) {
+          console.error(error)
+        } else {
+          console.log('publishing a stream')
+        }
+      })
+    },
+
+    bindPublisherEvent () {
+      publisher.on({
+        accessAllowed (event) {
+          console.log('publish', event)
+        },
+        acessDenied (event) {
+          console.log('publish', event)
+        }
       })
     },
 
@@ -95,7 +141,7 @@ div.control {
   margin: 12px auto;
 }
 
-video#publisher-video {
+div#publisherContainer {
   width: 60%;
   box-shadow: 0px 2px 6px 0px;
 }
