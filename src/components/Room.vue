@@ -9,6 +9,7 @@
       <button @click="mute()"> Mute / Unmute</button>
       <button @click="dropCall()">End Call</button>
     </div>
+    <div id="subcriberContainer"></div>
   </div>
 </template>
 
@@ -20,6 +21,7 @@ import axios from 'axios'
 let session = null
 let OT = window.OT
 let publisher = null
+// let subscriber = null
 
 export default {
   name: 'Room',
@@ -109,8 +111,20 @@ export default {
         },
         acessDenied (event) {
           console.log('publish', event)
+        },
+        streamCreated (event) {
+          let subscriberOpions = {
+            testNetwork: true
+          }
+          session.subscribe(event.stream, 'subcriberContainer', subscriberOpions, (error) => {
+            console.error('subscriber', error)
+          })
         }
       })
+    },
+
+    subscribeCallback (error) {
+      console.error('subscriber', error)
     },
 
     mute () {
