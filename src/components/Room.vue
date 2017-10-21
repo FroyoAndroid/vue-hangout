@@ -38,7 +38,7 @@ export default {
         console.error('Browser does not support webrtc')
       }
 
-      axios.post('http://localhost:3000/rooms/token', {
+      axios.post('https://apitokbox.herokuapp.com/rooms/token', {
         sessionID: sessionId,
         tokenType: 'publisher',
         username: 'test'

@@ -20,7 +20,7 @@ export default {
     }
   },
   created () {
-    axios.get(`http://localhost:3000/rooms`)
+    axios.get(`https://apitokbox.herokuapp.com/rooms`)
     .then(response => {
       this.rooms = response.data
     })
