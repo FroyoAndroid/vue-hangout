@@ -10,6 +10,7 @@
 </template>
 
 <script>
+import config from '../config/tokbox.config'
 import axios from 'axios'
 export default {
   name: 'Dashboard',
@@ -20,7 +21,7 @@ export default {
     }
   },
   created () {
-    axios.get(`https://apitokbox.herokuapp.com/rooms`)
+    axios.get(`${config.apiBaseUrl}/rooms`)
     .then(response => {
       this.rooms = response.data
     })
